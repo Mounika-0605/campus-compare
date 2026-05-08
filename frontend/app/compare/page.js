@@ -1,11 +1,11 @@
 "use client";
 
+import { Suspense, useEffect, useState } from "react";
 import { useSearchParams } from "next/navigation";
-import { useEffect, useState } from "react";
 import axios from "axios";
 import Link from "next/link";
 
-export default function ComparePage() {
+function CompareContent() {
   const searchParams = useSearchParams();
   const ids = searchParams.get("ids")?.split(",") || [];
 
@@ -27,7 +27,6 @@ export default function ComparePage() {
 
   return (
     <div className="p-6 max-w-5xl mx-auto">
-      {/* 🔙 Back */}
       <Link href="/">
         <p className="mb-6 text-blue-400 cursor-pointer">← Back</p>
       </Link>
@@ -87,5 +86,13 @@ export default function ComparePage() {
         </table>
       </div>
     </div>
+  );
+}
+
+export default function ComparePage() {
+  return (
+    <Suspense fallback={<p className="p-6">Loading...</p>}>
+      <CompareContent />
+    </Suspense>
   );
 }
