@@ -38,6 +38,7 @@ function CompareContent() {
           <thead>
             <tr className="bg-white/10">
               <th className="p-3 border">Feature</th>
+
               {colleges.map((c) => (
                 <th key={c.id} className="p-3 border">
                   {c.name}
@@ -49,6 +50,7 @@ function CompareContent() {
           <tbody>
             <tr>
               <td className="p-3 border">Location</td>
+
               {colleges.map((c) => (
                 <td key={c.id} className="p-3 border">
                   {c.location}
@@ -58,6 +60,7 @@ function CompareContent() {
 
             <tr>
               <td className="p-3 border">Fees</td>
+
               {colleges.map((c) => (
                 <td key={c.id} className="p-3 border">
                   ₹{c.fees}
@@ -67,6 +70,7 @@ function CompareContent() {
 
             <tr>
               <td className="p-3 border">Rating</td>
+
               {colleges.map((c) => (
                 <td key={c.id} className="p-3 border">
                   ⭐ {c.rating}
@@ -76,6 +80,7 @@ function CompareContent() {
 
             <tr>
               <td className="p-3 border">Placement</td>
+
               {colleges.map((c) => (
                 <td key={c.id} className="p-3 border">
                   {c.placement_percentage}%
