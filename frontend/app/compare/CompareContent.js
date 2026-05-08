@@ -9,11 +9,10 @@ export default function CompareContent() {
   const college2 = searchParams.get("college2");
 
   return (
-    <div style={{ padding: "20px" }}>
-      <h1>College Comparison</h1>
-
-      <p>College 1: {college1}</p>
-      <p>College 2: {college2}</p>
+    <div>
+      <h1>Compare Colleges</h1>
+      <p>{college1}</p>
+      <p>{college2}</p>
     </div>
   );
 }
