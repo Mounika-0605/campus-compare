@@ -131,3 +131,34 @@ const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
 });
+app.get("/seed-colleges", async (req, res) => {
+  try {
+    await pool.query(`
+      INSERT INTO colleges
+      (id, name, location, fees, rating, placement_percentage, courses)
+      VALUES
+
+      (1, 'IIT Delhi', 'Delhi', 200000, 4.8, 95, ARRAY['CSE','ECE']),
+      (2, 'IIT Bombay', 'Mumbai', 220000, 4.9, 97, ARRAY['CSE','Mechanical']),
+      (3, 'NIT Trichy', 'Tamil Nadu', 150000, 4.5, 90, ARRAY['CSE','Civil']),
+      (4, 'BITS Pilani', 'Rajasthan', 300000, 4.7, 92, ARRAY['CSE','EEE']),
+      (5, 'VIT Vellore', 'Tamil Nadu', 180000, 4.3, 85, ARRAY['CSE','IT']),
+      (6, 'SRM University', 'Tamil Nadu', 250000, 4.2, 85, ARRAY['CSE','ECE']),
+      (7, 'Amity University', 'Noida', 300000, 4.0, 80, ARRAY['CSE','MBA']),
+      (8, 'Delhi University', 'Delhi', 50000, 4.5, 88, ARRAY['BA','BCom']),
+      (9, 'JNTU Hyderabad', 'Telangana', 90000, 4.1, 82, ARRAY['CSE','EEE']),
+      (10, 'Anna University', 'Tamil Nadu', 70000, 4.4, 87, ARRAY['CSE','Civil']),
+      (11, 'SRM University 2', 'Tamil Nadu', 250000, 4.2, 85, ARRAY['CSE','ECE']),
+      (12, 'Amity University 2', 'Noida', 300000, 4.0, 80, ARRAY['CSE','MBA']),
+      (13, 'Delhi University 2', 'Delhi', 50000, 4.5, 88, ARRAY['BA','BCom']),
+      (14, 'JNTU Hyderabad 2', 'Telangana', 90000, 4.1, 82, ARRAY['CSE','EEE']),
+      (15, 'Anna University 2', 'Tamil Nadu', 70000, 4.4, 87, ARRAY['CSE','Civil'])
+
+    `);
+
+    res.send("15 colleges inserted successfully");
+  } catch (err) {
+    console.error(err);
+    res.status(500).send(err.message);
+  }
+});
