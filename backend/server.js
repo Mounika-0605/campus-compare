@@ -59,10 +59,14 @@ ON CONFLICT DO NOTHING;
 
 app.use(
   cors({
-    origin: "https://campus-compare.vercel.app",
+    origin: [
+      "https://campus-compare.vercel.app",
+      "https://campus-compare-p5wfn8hq4-mounika-0605s-projects.vercel.app",
+      "http://localhost:3000",
+    ],
+    credentials: true,
   }),
 );
-
 app.use(express.json());
 
 /* ---------- ROUTES ---------- */
