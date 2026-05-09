@@ -50,7 +50,19 @@ app.get("/", (req, res) => {
 
 app.get("/colleges", async (req, res) => {
   try {
-    const result = await pool.query("SELECT * FROM colleges ORDER BY id ASC");
+    const result = await pool.query(`
+      SELECT
+        id,
+        name,
+        location,
+        fees,
+        ranking,
+        placements AS placement_percentage,
+        image,
+        description
+      FROM colleges
+      ORDER BY id ASC
+    `);
 
     res.json(result.rows);
   } catch (err) {
@@ -90,6 +102,8 @@ app.get("/questions", async (req, res) => {
   }
 });
 
+/* ---------- ADD QUESTION ---------- */
+
 app.post("/questions", async (req, res) => {
   try {
     const { college_id, question } = req.body;
@@ -110,6 +124,8 @@ app.post("/questions", async (req, res) => {
     });
   }
 });
+
+/* ---------- ANSWER QUESTION ---------- */
 
 app.put("/questions/:id", async (req, res) => {
   try {
@@ -136,15 +152,9 @@ app.put("/questions/:id", async (req, res) => {
 
 app.get("/seed-colleges", async (req, res) => {
   try {
-    /* CLEAR OLD DATA */
-
     await pool.query("DELETE FROM colleges");
 
-    /* RESET ID */
-
     await pool.query("ALTER SEQUENCE colleges_id_seq RESTART WITH 1");
-
-    /* INSERT NEW DATA */
 
     await pool.query(`
       INSERT INTO colleges
@@ -152,111 +162,41 @@ app.get("/seed-colleges", async (req, res) => {
 
       VALUES
 
-      (
-        'IIT Delhi',
-        'Delhi',
-        '2 Lakhs/year',
-        'Top 5',
-        '95%',
-        'https://images.unsplash.com/photo-1562774053-701939374585',
-        'Excellent engineering institute'
-      ),
+      ('IIT Delhi','Delhi','2 Lakhs/year','Top 5','95%','https://images.unsplash.com/photo-1562774053-701939374585','Top IIT college'),
 
-      (
-        'IIT Bombay',
-        'Mumbai',
-        '2.2 Lakhs/year',
-        'Top 3',
-        '97%',
-        'https://images.unsplash.com/photo-1523050854058-8df90110c9f1',
-        'Premier IIT in India'
-      ),
+      ('IIT Bombay','Mumbai','2.2 Lakhs/year','Top 3','97%','https://images.unsplash.com/photo-1523050854058-8df90110c9f1','Premier IIT'),
 
-      (
-        'NIT Trichy',
-        'Tamil Nadu',
-        '1.5 Lakhs/year',
-        'Top 15',
-        '90%',
-        'https://images.unsplash.com/photo-1564981797816-1043664bf78d',
-        'Top NIT college'
-      ),
+      ('NIT Trichy','Tamil Nadu','1.5 Lakhs/year','Top 15','90%','https://images.unsplash.com/photo-1564981797816-1043664bf78d','Top NIT'),
 
-      (
-        'BITS Pilani',
-        'Rajasthan',
-        '3 Lakhs/year',
-        'Top 10',
-        '92%',
-        'https://images.unsplash.com/photo-1541339907198-e08756dedf3f',
-        'Top private engineering college'
-      ),
+      ('BITS Pilani','Rajasthan','3 Lakhs/year','Top 10','92%','https://images.unsplash.com/photo-1541339907198-e08756dedf3f','Top private college'),
 
-      (
-        'VIT Vellore',
-        'Tamil Nadu',
-        '1.8 Lakhs/year',
-        'Top 20',
-        '85%',
-        'https://images.unsplash.com/photo-1523240795612-9a054b0db644',
-        'Popular private university'
-      ),
+      ('VIT Vellore','Tamil Nadu','1.8 Lakhs/year','Top 20','85%','https://images.unsplash.com/photo-1523240795612-9a054b0db644','Popular private university'),
 
-      (
-        'SRM University',
-        'Chennai',
-        '2 Lakhs/year',
-        'Top 25',
-        '85%',
-        'https://images.unsplash.com/photo-1498243691581-b145c3f54a5a',
-        'Leading private university'
-      ),
+      ('SRM University','Chennai','2 Lakhs/year','Top 25','85%','https://images.unsplash.com/photo-1498243691581-b145c3f54a5a','Leading private university'),
 
-      (
-        'Amity University',
-        'Noida',
-        '3 Lakhs/year',
-        'Top 40',
-        '80%',
-        'https://images.unsplash.com/photo-1562774053-701939374585',
-        'Well known private university'
-      ),
+      ('Amity University','Noida','3 Lakhs/year','Top 40','80%','https://images.unsplash.com/photo-1562774053-701939374585','Well known private university'),
 
-      (
-        'Delhi University',
-        'Delhi',
-        '50K/year',
-        'Top 15',
-        '88%',
-        'https://images.unsplash.com/photo-1523050854058-8df90110c9f1',
-        'Top central university'
-      ),
+      ('Delhi University','Delhi','50K/year','Top 15','88%','https://images.unsplash.com/photo-1523050854058-8df90110c9f1','Top central university'),
 
-      (
-        'JNTU Hyderabad',
-        'Telangana',
-        '90K/year',
-        'Top 30',
-        '82%',
-        'https://images.unsplash.com/photo-1564981797816-1043664bf78d',
-        'Famous engineering university'
-      ),
+      ('JNTU Hyderabad','Telangana','90K/year','Top 30','82%','https://images.unsplash.com/photo-1564981797816-1043664bf78d','Famous engineering university'),
 
-      (
-        'Anna University',
-        'Tamil Nadu',
-        '70K/year',
-        'Top 20',
-        '87%',
-        'https://images.unsplash.com/photo-1541339907198-e08756dedf3f',
-        'Popular government university'
-      );
+      ('Anna University','Tamil Nadu','70K/year','Top 20','87%','https://images.unsplash.com/photo-1541339907198-e08756dedf3f','Popular government university'),
+
+      ('Osmania University','Hyderabad','60K/year','Top 35','78%','https://images.unsplash.com/photo-1523240795612-9a054b0db644','Historic university'),
+
+      ('IIT Hyderabad','Hyderabad','2 Lakhs/year','Top 10','95%','https://images.unsplash.com/photo-1562774053-701939374585','Excellent engineering institute'),
+
+      ('NIT Warangal','Warangal','1.5 Lakhs/year','Top 20','90%','https://images.unsplash.com/photo-1523050854058-8df90110c9f1','Top national institute'),
+
+      ('Manipal University','Manipal','2.5 Lakhs/year','Top 30','84%','https://images.unsplash.com/photo-1498243691581-b145c3f54a5a','Popular private university'),
+
+      ('KL University','Vijayawada','1.2 Lakhs/year','Top 50','80%','https://images.unsplash.com/photo-1523240795612-9a054b0db644','Growing private university');
+
     `);
 
-    res.send("10 colleges inserted successfully");
+    res.send("15 colleges inserted successfully");
   } catch (err) {
     console.error(err);
-
     res.status(500).send(err.message);
   }
 });
