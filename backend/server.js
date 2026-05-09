@@ -135,28 +135,61 @@ app.get("/seed-colleges", async (req, res) => {
   try {
     await pool.query(`
       INSERT INTO colleges
-      (id, name, location, fees, rating, placement_percentage, courses)
+      (name, location, fees, ranking, placements, image, description)
       VALUES
 
-      (1, 'IIT Delhi', 'Delhi', 200000, 4.8, 95, ARRAY['CSE','ECE']),
-      (2, 'IIT Bombay', 'Mumbai', 220000, 4.9, 97, ARRAY['CSE','Mechanical']),
-      (3, 'NIT Trichy', 'Tamil Nadu', 150000, 4.5, 90, ARRAY['CSE','Civil']),
-      (4, 'BITS Pilani', 'Rajasthan', 300000, 4.7, 92, ARRAY['CSE','EEE']),
-      (5, 'VIT Vellore', 'Tamil Nadu', 180000, 4.3, 85, ARRAY['CSE','IT']),
-      (6, 'SRM University', 'Tamil Nadu', 250000, 4.2, 85, ARRAY['CSE','ECE']),
-      (7, 'Amity University', 'Noida', 300000, 4.0, 80, ARRAY['CSE','MBA']),
-      (8, 'Delhi University', 'Delhi', 50000, 4.5, 88, ARRAY['BA','BCom']),
-      (9, 'JNTU Hyderabad', 'Telangana', 90000, 4.1, 82, ARRAY['CSE','EEE']),
-      (10, 'Anna University', 'Tamil Nadu', 70000, 4.4, 87, ARRAY['CSE','Civil']),
-      (11, 'SRM University 2', 'Tamil Nadu', 250000, 4.2, 85, ARRAY['CSE','ECE']),
-      (12, 'Amity University 2', 'Noida', 300000, 4.0, 80, ARRAY['CSE','MBA']),
-      (13, 'Delhi University 2', 'Delhi', 50000, 4.5, 88, ARRAY['BA','BCom']),
-      (14, 'JNTU Hyderabad 2', 'Telangana', 90000, 4.1, 82, ARRAY['CSE','EEE']),
-      (15, 'Anna University 2', 'Tamil Nadu', 70000, 4.4, 87, ARRAY['CSE','Civil'])
+      (
+        'IIT Delhi',
+        'Delhi',
+        '2 Lakhs/year',
+        'Top 5',
+        '95%',
+        'https://images.unsplash.com/photo-1562774053-701939374585',
+        'Excellent engineering institute'
+      ),
 
+      (
+        'IIT Bombay',
+        'Mumbai',
+        '2.2 Lakhs/year',
+        'Top 3',
+        '97%',
+        'https://images.unsplash.com/photo-1523050854058-8df90110c9f1',
+        'Premier IIT in India'
+      ),
+
+      (
+        'NIT Trichy',
+        'Tamil Nadu',
+        '1.5 Lakhs/year',
+        'Top 15',
+        '90%',
+        'https://images.unsplash.com/photo-1564981797816-1043664bf78d',
+        'Top NIT college'
+      ),
+
+      (
+        'BITS Pilani',
+        'Rajasthan',
+        '3 Lakhs/year',
+        'Top 10',
+        '92%',
+        'https://images.unsplash.com/photo-1541339907198-e08756dedf3f',
+        'Top private engineering college'
+      ),
+
+      (
+        'VIT Vellore',
+        'Tamil Nadu',
+        '1.8 Lakhs/year',
+        'Top 20',
+        '85%',
+        'https://images.unsplash.com/photo-1523240795612-9a054b0db644',
+        'Popular private university'
+      )
     `);
 
-    res.send("15 colleges inserted successfully");
+    res.send("Colleges inserted successfully");
   } catch (err) {
     console.error(err);
     res.status(500).send(err.message);
