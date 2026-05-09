@@ -20,7 +20,7 @@ export default function CollegeDetail() {
     const fetchData = async () => {
       try {
         const collegeRes = await axios.get(
-          "https://campus-compare.onrender.comcolleges",
+          "https://campus-compare.onrender.com/colleges",
         );
         const found = collegeRes.data.find((c) => c.id == id);
         setCollege(found);
