@@ -12,7 +12,6 @@ A web application to compare colleges based on:
 
 - College comparison
 - Detailed college pages
-- Q&A discussion section
 - Modern UI using Next.js and Tailwind CSS
 
 ## Tech Stack
