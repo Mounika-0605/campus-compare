@@ -16,7 +16,7 @@ export default function Home() {
 
   useEffect(() => {
     axios
-      .get("http://localhost:5000/colleges")
+      .get("https://campus-compare.onrender.com/colleges")
       .then((res) => {
         setColleges(res.data);
         setLoading(false);

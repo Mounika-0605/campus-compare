@@ -19,11 +19,15 @@ export default function CollegeDetail() {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const collegeRes = await axios.get("http://localhost:5000/colleges");
+        const collegeRes = await axios.get(
+          "https://campus-compare.onrender.comcolleges",
+        );
         const found = collegeRes.data.find((c) => c.id == id);
         setCollege(found);
 
-        const qRes = await axios.get("http://localhost:5000/questions");
+        const qRes = await axios.get(
+          "https://campus-compare.onrender.com/questions",
+        );
         const filtered = qRes.data.filter((q) => q.college_id == id);
         setQuestions(filtered);
 
@@ -37,7 +41,9 @@ export default function CollegeDetail() {
   }, [id]);
 
   const refreshQuestions = async () => {
-    const res = await axios.get("http://localhost:5000/questions");
+    const res = await axios.get(
+      "https://campus-compare.onrender.com/questions",
+    );
     const filtered = res.data.filter((q) => q.college_id == id);
     setQuestions(filtered);
   };
@@ -47,7 +53,7 @@ export default function CollegeDetail() {
 
     setSubmitting(true);
 
-    await axios.post("http://localhost:5000/questions", {
+    await axios.post("https://campus-compare.onrender.com/questions", {
       college_id: id,
       question: newQuestion,
     });
@@ -62,7 +68,7 @@ export default function CollegeDetail() {
     const ans = answerInputs[qid];
     if (!ans || !ans.trim()) return;
 
-    await axios.put(`http://localhost:5000/questions/${qid}`, {
+    await axios.put(`https://campus-compare.onrender.com/questions/${qid}`, {
       answer: ans,
     });
 
