@@ -42,8 +42,22 @@ export default function Home() {
 
   let sortedColleges = [...filteredColleges];
 
-  if (sort === "name") {
-    sortedColleges.sort((a, b) => a.name.localeCompare(b.name));
+  if (sort === "fees_low") {
+    sortedColleges.sort((a, b) => parseFloat(a.fees) - parseFloat(b.fees));
+  }
+
+  if (sort === "fees_high") {
+    sortedColleges.sort((a, b) => parseFloat(b.fees) - parseFloat(a.fees));
+  }
+
+  if (sort === "placements") {
+    sortedColleges.sort(
+      (a, b) => parseInt(b.placements) - parseInt(a.placements),
+    );
+  }
+
+  if (sort === "ranking") {
+    sortedColleges.sort((a, b) => a.ranking.localeCompare(b.ranking));
   }
 
   const uniqueLocations = [...new Set(colleges.map((c) => c.location))];
@@ -59,6 +73,7 @@ export default function Home() {
       </h1>
 
       {/* FILTERS */}
+
       <div className="backdrop-blur-lg bg-white/5 border border-white/10 p-5 rounded-2xl mb-6 flex gap-4 flex-wrap shadow-lg">
         <input
           type="text"
@@ -88,7 +103,14 @@ export default function Home() {
           onChange={(e) => setSort(e.target.value)}
         >
           <option value="">Sort By</option>
-          <option value="name">Name</option>
+
+          <option value="fees_low">Fees: Low → High</option>
+
+          <option value="fees_high">Fees: High → Low</option>
+
+          <option value="placements">Placements</option>
+
+          <option value="ranking">Ranking</option>
         </select>
 
         <button
@@ -108,9 +130,11 @@ export default function Home() {
       </p>
 
       {/* COMPARE BUTTON */}
+
       <button
         onClick={() => {
           const ids = selected.map((c) => c.id).join(",");
+
           window.location.href = `/compare?ids=${ids}`;
         }}
         disabled={selected.length < 2}
@@ -120,6 +144,7 @@ export default function Home() {
       </button>
 
       {/* COLLEGE CARDS */}
+
       {sortedColleges.map((college) => (
         <Link key={college.id} href={`/college/${college.id}`}>
           <div
@@ -142,7 +167,7 @@ export default function Home() {
               </div>
 
               <span className="bg-yellow-400 text-black px-3 py-1 rounded">
-                ⭐ {college.rating || "4.5"}
+                ⭐ 4.5
               </span>
             </div>
 
@@ -151,7 +176,7 @@ export default function Home() {
 
               <p>💰 ₹{college.fees}</p>
 
-              <p>📈 {college.placements}</p>
+              <p>📈 {college.placements} placed</p>
 
               <p>🏆 {college.ranking}</p>
             </div>
@@ -160,11 +185,13 @@ export default function Home() {
       ))}
 
       {/* EMPTY */}
+
       {sortedColleges.length === 0 && (
         <p className="text-center text-gray-400 mt-10">No colleges found</p>
       )}
 
       {/* STICKY BAR */}
+
       {selected.length > 0 && (
         <div className="fixed bottom-4 left-1/2 -translate-x-1/2 bg-black/80 px-6 py-3 rounded-xl shadow-lg">
           {selected.length} selected

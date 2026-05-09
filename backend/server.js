@@ -46,20 +46,12 @@ app.get("/", (req, res) => {
   res.send("Server working");
 });
 
-/* ---------- GET COLLEGES ---------- */
+/* ---------- GET ALL COLLEGES ---------- */
 
 app.get("/colleges", async (req, res) => {
   try {
     const result = await pool.query(`
-      SELECT
-        id,
-        name,
-        location,
-        fees,
-        ranking,
-        placements AS placement_percentage,
-        image,
-        description
+      SELECT *
       FROM colleges
       ORDER BY id ASC
     `);
@@ -148,7 +140,7 @@ app.put("/questions/:id", async (req, res) => {
   }
 });
 
-/* ---------- RESET + INSERT COLLEGES ---------- */
+/* ---------- SEED 15 COLLEGES ---------- */
 
 app.get("/seed-colleges", async (req, res) => {
   try {
@@ -191,7 +183,6 @@ app.get("/seed-colleges", async (req, res) => {
       ('Manipal University','Manipal','2.5 Lakhs/year','Top 30','84%','https://images.unsplash.com/photo-1498243691581-b145c3f54a5a','Popular private university'),
 
       ('KL University','Vijayawada','1.2 Lakhs/year','Top 50','80%','https://images.unsplash.com/photo-1523240795612-9a054b0db644','Growing private university');
-
     `);
 
     res.send("15 colleges inserted successfully");
