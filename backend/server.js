@@ -6,7 +6,17 @@ const pool = require("./db");
 
 const app = express();
 
-/* ---------- AUTO CREATE TABLES ---------- */
+/* ---------- MIDDLEWARE ---------- */
+
+app.use(
+  cors({
+    origin: "*",
+  }),
+);
+
+app.use(express.json());
+
+/* ---------- CREATE TABLES ---------- */
 
 pool.query(`
 CREATE TABLE IF NOT EXISTS colleges (
@@ -30,60 +40,41 @@ CREATE TABLE IF NOT EXISTS questions (
 );
 `);
 
-pool.query(`
-INSERT INTO colleges
-(name, location, fees, ranking, placements, image, description)
-VALUES
-(
-  'IIT Hyderabad',
-  'Hyderabad',
-  '2 Lakhs/year',
-  'Top 10',
-  '95%',
-  'https://images.unsplash.com/photo-1562774053-701939374585',
-  'Excellent engineering institute'
-),
-(
-  'NIT Warangal',
-  'Warangal',
-  '1.5 Lakhs/year',
-  'Top 20',
-  '90%',
-  'https://images.unsplash.com/photo-1523050854058-8df90110c9f1',
-  'Top national institute'
-)
-ON CONFLICT DO NOTHING;
-`);
-
-/* ---------- MIDDLEWARE ---------- */
-
-app.use(
-  cors({
-    origin: [
-      "https://campus-compare.vercel.app",
-      "https://campus-compare-p5wfn8hq4-mounika-0605s-projects.vercel.app",
-      "http://localhost:3000",
-    ],
-    credentials: true,
-  }),
-);
-app.use(express.json());
-
-/* ---------- ROUTES ---------- */
+/* ---------- HOME ---------- */
 
 app.get("/", (req, res) => {
   res.send("Server working");
 });
 
+/* ---------- GET COLLEGES ---------- */
+
 app.get("/colleges", async (req, res) => {
   try {
-    const result = await pool.query("SELECT * FROM colleges");
+    const result = await pool.query("SELECT * FROM colleges ORDER BY id ASC");
+
     res.json(result.rows);
   } catch (err) {
     console.error(err.message);
     res.status(500).send("Server Error");
   }
 });
+
+/* ---------- GET SINGLE COLLEGE ---------- */
+
+app.get("/colleges/:id", async (req, res) => {
+  try {
+    const result = await pool.query("SELECT * FROM colleges WHERE id=$1", [
+      req.params.id,
+    ]);
+
+    res.json(result.rows[0]);
+  } catch (err) {
+    console.error(err.message);
+    res.status(500).send("Server Error");
+  }
+});
+
+/* ---------- QUESTIONS ---------- */
 
 app.get("/questions", async (req, res) => {
   try {
@@ -92,7 +83,10 @@ app.get("/questions", async (req, res) => {
     res.json(result.rows);
   } catch (err) {
     console.error(err);
-    res.status(500).json({ error: "Server error" });
+
+    res.status(500).json({
+      error: "Server error",
+    });
   }
 });
 
@@ -105,10 +99,15 @@ app.post("/questions", async (req, res) => {
       [college_id, question],
     );
 
-    res.json({ message: "Question added" });
+    res.json({
+      message: "Question added",
+    });
   } catch (err) {
     console.error(err);
-    res.status(500).json({ error: "Server error" });
+
+    res.status(500).json({
+      error: "Server error",
+    });
   }
 });
 
@@ -121,25 +120,36 @@ app.put("/questions/:id", async (req, res) => {
       req.params.id,
     ]);
 
-    res.json({ message: "Answer saved" });
+    res.json({
+      message: "Answer saved",
+    });
   } catch (err) {
     console.error(err);
-    res.status(500).json({ error: "Server error" });
+
+    res.status(500).json({
+      error: "Server error",
+    });
   }
 });
 
-/* ---------- SERVER ---------- */
+/* ---------- RESET + INSERT COLLEGES ---------- */
 
-const PORT = process.env.PORT || 5000;
-
-app.listen(PORT, () => {
-  console.log(`Server running on port ${PORT}`);
-});
 app.get("/seed-colleges", async (req, res) => {
   try {
+    /* CLEAR OLD DATA */
+
+    await pool.query("DELETE FROM colleges");
+
+    /* RESET ID */
+
+    await pool.query("ALTER SEQUENCE colleges_id_seq RESTART WITH 1");
+
+    /* INSERT NEW DATA */
+
     await pool.query(`
       INSERT INTO colleges
       (name, location, fees, ranking, placements, image, description)
+
       VALUES
 
       (
@@ -190,12 +200,71 @@ app.get("/seed-colleges", async (req, res) => {
         '85%',
         'https://images.unsplash.com/photo-1523240795612-9a054b0db644',
         'Popular private university'
-      )
+      ),
+
+      (
+        'SRM University',
+        'Chennai',
+        '2 Lakhs/year',
+        'Top 25',
+        '85%',
+        'https://images.unsplash.com/photo-1498243691581-b145c3f54a5a',
+        'Leading private university'
+      ),
+
+      (
+        'Amity University',
+        'Noida',
+        '3 Lakhs/year',
+        'Top 40',
+        '80%',
+        'https://images.unsplash.com/photo-1562774053-701939374585',
+        'Well known private university'
+      ),
+
+      (
+        'Delhi University',
+        'Delhi',
+        '50K/year',
+        'Top 15',
+        '88%',
+        'https://images.unsplash.com/photo-1523050854058-8df90110c9f1',
+        'Top central university'
+      ),
+
+      (
+        'JNTU Hyderabad',
+        'Telangana',
+        '90K/year',
+        'Top 30',
+        '82%',
+        'https://images.unsplash.com/photo-1564981797816-1043664bf78d',
+        'Famous engineering university'
+      ),
+
+      (
+        'Anna University',
+        'Tamil Nadu',
+        '70K/year',
+        'Top 20',
+        '87%',
+        'https://images.unsplash.com/photo-1541339907198-e08756dedf3f',
+        'Popular government university'
+      );
     `);
 
-    res.send("Colleges inserted successfully");
+    res.send("10 colleges inserted successfully");
   } catch (err) {
     console.error(err);
+
     res.status(500).send(err.message);
   }
+});
+
+/* ---------- SERVER ---------- */
+
+const PORT = process.env.PORT || 5000;
+
+app.listen(PORT, () => {
+  console.log(`Server running on port ${PORT}`);
 });
